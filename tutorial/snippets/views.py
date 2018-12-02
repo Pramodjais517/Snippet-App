@@ -2,7 +2,7 @@ from snippets.serializers import SnippetSerializer, UserSerializer
 from rest_framework import generics, permissions
 from snippets.models import Snippet
 from django.contrib.auth.models import User
-from snippets.permissions import IsOwnerOrReadOnly
+from snippets.permissions import IsOwnerOrReadOnly,IsUser
 from rest_framework.decorators import api_view
 from rest_framework import renderers
 from rest_framework.response import Response
@@ -31,10 +31,18 @@ class SnippetViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
+class UserViewSet(viewsets.ModelViewSet):
     """
-    This viewset automatically provides `list` and `detail` actions.
+    This viewset automatically provides `list`, `create`, `retrieve`,
+    `update` and `destroy` actions.
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,
+                          IsUser,)
+
+    # def perform_create(self, serializer):
+    #     serializer.save()
+
+
 
