@@ -21,5 +21,4 @@ class IsUser(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
 
-        # return obj.username == request.user.username
-        return True
+        return obj.username == request.user.username

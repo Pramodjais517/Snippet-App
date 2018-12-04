@@ -8,10 +8,12 @@ router = DefaultRouter()
 router.register(r'snippets', views.SnippetViewSet)
 router.register(r'users', views.UserViewSet)
 
+
 schema_view = get_schema_view(title='Pastebin API')
 
 # The API URLs are now determined automatically by the router.
 urlpatterns = [
     path('', include(router.urls)),
     path('schema/', schema_view),
+
 ]
