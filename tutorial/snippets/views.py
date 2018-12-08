@@ -1,5 +1,6 @@
 from snippets.serializers import SnippetSerializer, UserSerializer
-from rest_framework import permissions,authentication
+from rest_framework import permissions
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from snippets.models import Snippet
 from django.contrib.auth.models import User
 from snippets.permissions import IsOwnerOrReadOnly,IsUser
@@ -17,9 +18,8 @@ class SnippetViewSet(viewsets.ModelViewSet):
     """
     queryset = Snippet.objects.all()
     serializer_class = SnippetSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,
-                          IsOwnerOrReadOnly,)
-    authentication_classes = (authentication.TokenAuthentication)
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly)
+    # authentication_classes = (JSONWebTokenAuthentication,)
 
     @action(detail=True, renderer_classes=[renderers.StaticHTMLRenderer])
     def highlight(self, request, *args, **kwargs):
@@ -36,10 +36,11 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,
-                          IsUser,)
+    permission_classes = (permissions.IsAuthenticated, IsUser,)
+    # authentication_classes = (JSONWebTokenAuthentication,)
 
-    def perform_create(self, serializer):
+
+def perform_create(self, serializer):
         serializer.save()
 
 
